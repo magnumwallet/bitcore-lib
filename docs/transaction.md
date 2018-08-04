@@ -13,23 +13,25 @@ Let's take a look at some very simple transactions:
 var transaction = new Transaction()
     .from(utxos)          // Feed information about what unspent outputs one can use
     .to(address, amount)  // Add an output with the given amount of satoshis
+    .anondest(metadata)   // Sets the transaction metadata
+    .settime(timestamp)   // Sets the transaction timestamp
     .change(address)      // Sets up a change address where the rest of the funds will go
     .sign(privkeySet)     // Signs all the inputs it can
 ```
 
 You can obtain the input and output total amounts of the transaction in satoshis by accessing the fields `inputAmount` and `outputAmount`.
 
-Now, this could just be serialized to hexadecimal ASCII values (`transaction.serialize()`) and sent over to the bitcoind reference client.
+Now, this could just be serialized to hexadecimal ASCII values (`transaction.serialize()`) and sent over to the navcoind reference client.
 
 ```bash
-bitcoin-cli sendrawtransaction <serialized transaction>
+navcoin-cli sendrawtransaction <serialized transaction>
 ```
 
 You can also override the fee estimation with another amount, specified in satoshis:
 
 ```javascript
 var transaction = new Transaction().fee(5430); // Minimum non-dust amount
-var transaction = new Transaction().fee(1e8);  // Generous fee of 1 BTC
+var transaction = new Transaction().fee(1e8);  // Generous fee of 1 NAV
 ```
 
 ## Multisig Transactions
@@ -75,7 +77,7 @@ transaction.applySignature(receivedSig);
 ```
 
 ## Adding inputs
-Transaction inputs are instances of either [Input](https://github.com/bitpay/bitcore/tree/master/lib/transaction/input) or its subclasses. `Input` has some abstract methods, as there is no actual concept of a "signed input" in the bitcoin scripting system (just valid signatures for <tt>OP_CHECKSIG</tt> and similar opcodes). They are stored in the `input` property of `Transaction` instances.
+Transaction inputs are instances of either [Input](https://github.com/encrypt-s/bitcore/tree/master/lib/transaction/input) or its subclasses. `Input` has some abstract methods, as there is no actual concept of a "signed input" in the bitcoin scripting system (just valid signatures for <tt>OP_CHECKSIG</tt> and similar opcodes). They are stored in the `input` property of `Transaction` instances.
 
 Bitcore contains two implementations of `Input`, one for spending _Pay to Public Key Hash_ outputs (called `PublicKeyHashInput`) and another to spend _Pay to Script Hash_ outputs for which the redeem script is a Multisig script (called `MultisigScriptHashInput`).
 
